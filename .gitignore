@@ -1,0 +1,4 @@
+.env
+.ash_history
+.cache/
+.vscode/
