@@ -2,3 +2,4 @@
 .ash_history
 .cache/
 .vscode/
+.DS_Store
