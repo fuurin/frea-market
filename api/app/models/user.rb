@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
 
   around_create :set_init_point
 
+  has_many :items, class_name: 'Item', foreign_key: 'user_id'
+
   validates :name,
             presence: true,
             length: { minimum: Settings.models.user.name_length.min, maximum: Settings.models.user.name_length.max }
@@ -17,6 +19,8 @@ class User < ActiveRecord::Base
             format: { with: /#{Settings.models.user.email_format_regex}/i },
             uniqueness: { case_sensitive: true }
   validates :point, presence: true
+
+  private
 
   def set_init_point
     self.point = Settings.models.user.init_point

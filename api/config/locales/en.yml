@@ -31,3 +31,7 @@
 
 en:
   hello: "Hello world"
+  api:
+    errors:
+      bad_request: Some parameters of the request are invalid.
+      not_found: The requested resource was not found.

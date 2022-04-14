@@ -5,3 +5,11 @@ models:
       min: 4
       max: 20
     init_point: 10000
+
+  item:
+    name_length:
+      min: 4
+      max: 20
+    description_length:
+      max: 100
+    page_size: 20

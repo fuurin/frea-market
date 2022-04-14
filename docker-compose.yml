@@ -2,8 +2,8 @@ services:
   db:
     image: postgres:12.3-alpine
     environment:
-      TZ: UTC
-      PGTZ: UTC
+      TZ: JST
+      PGTZ: JST
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     volumes:
       - ./api/tmp/db:/var/lib/postgresql/data

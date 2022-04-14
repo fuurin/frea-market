@@ -23,6 +23,7 @@ c:
 
 # migrationファイルを読み込んでschemaを更新しつつseedする
 db_init:
+	docker-compose restart db
 	docker-compose exec api rails db:migrate:reset
 	docker-compose exec api rails db:seed
 

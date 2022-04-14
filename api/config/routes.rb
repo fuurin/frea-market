@@ -7,5 +7,8 @@ Rails.application.routes.draw do
       registrations: 'v1/auth/registrations'
     }
     resources :hello, only: %i[index show]
+    resources :items
+    get  'market', to: 'market#show'
+    post 'market/buy/:item_id', to: 'market#buy', as: 'market_buy'
   end
 end
