@@ -7,6 +7,19 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
 
-  validates :name, presence: true
-  validates :email, presence: true
+  around_create :set_init_point
+
+  validates :name,
+            presence: true,
+            length: { minimum: Settings.models.user.name_length.min,  maximum: Settings.models.user.name_length.max }
+  validates :email,
+            presence: true,
+            format: { with: /#{Settings.models.user.email_format_regex}/i },
+            uniqueness: { case_sensitive: true }
+  validates :point, presence: true
+
+  def set_init_point
+    self.point = Settings.models.user.init_point
+    yield
+  end
 end

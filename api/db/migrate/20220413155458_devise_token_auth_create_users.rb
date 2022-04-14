@@ -41,6 +41,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.0]
       # t.string :nickname
       # t.string :image
       t.string :email, null: false
+      t.integer :point, null: false, default: 0
 
       ## Tokens
       t.json :tokens

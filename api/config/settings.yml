@@ -1,0 +1,7 @@
+models:
+  user:
+    email_format_regex: \A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z
+    name_length:
+      min: 4
+      max: 20
+    init_point: 10000
