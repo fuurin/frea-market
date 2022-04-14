@@ -1,0 +1,86 @@
+# ifのthen/elseでboolを返しては駄目(だけどちょっと大変なのでfalse)
+Style/IfWithBooleanLiteralBranches:
+  Enabled: false
+
+# render_500など使いたいのでfalse
+Naming/VariableNumber:
+  Enabled: false
+
+# slaveやblack/whitelistという単語を検知する設定
+# 過去経緯で該当箇所が多かったのでfalse
+Naming/InclusiveLanguage:
+  Enabled: false
+
+# 空クラスを作る必要があるのでfalse
+Lint/EmptyClass:
+  Enabled: false
+
+# 複数行コメント
+Style/BlockComments:
+  Enabled: false
+
+# ifの1行チェック
+Style/IfUnlessModifier:
+  Enabled: false
+
+# 「and」「or」の使用を許可
+Style/AndOr:
+  Enabled: false
+
+# モジュール名::クラス名の定義を許可
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# 日本語でのコメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 128
+
+Metrics/AbcSize:
+  Max: 50
+
+Metrics/CyclomaticComplexity:
+  Max: 8
+
+Metrics/PerceivedComplexity:
+  Max: 9
+
+Metrics/BlockLength:
+  Enabled: false
+
+# 1行の長さ上限は120とする
+Metrics/MethodLength:
+  Max: 120
+
+Metrics/ClassLength:
+  Max: 200
+
+# The following cops were added to RuboCop, but are not configured.
+# Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
+#
+AllCops:
+  NewCops: enable
+  Exclude:
+    - bin/*
+    - config/initializers/devise.rb
+    - coverage/**/*
+    - db/schema.rb
+    - log/**/*
+    - public/**/*
+    - storage/**/*
+    - tmp/**/*
+    - vendor/**/*
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
+Naming/BlockForwarding:
+  EnforcedStyle: explicit

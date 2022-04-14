@@ -1,0 +1,6 @@
+a = {a: 1, b: 2, c: 3}
+a[:a, :c]
+a.get(:a, :c)
+a.values_at(:a, :c)
+a.select{|k, v| [:a, :c].includes?(k) }
+a.select{|k, v| [:a, :c].include?(k) }
