@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
 
   validates :name,
             presence: true,
-            length: { minimum: Settings.models.user.name_length.min,  maximum: Settings.models.user.name_length.max }
+            length: { minimum: Settings.models.user.name_length.min, maximum: Settings.models.user.name_length.max }
   validates :email,
             presence: true,
             format: { with: /#{Settings.models.user.email_format_regex}/i },
