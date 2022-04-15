@@ -13,3 +13,6 @@ models:
     description_length:
       max: 100
     page_size: 20
+  
+  market_history:
+    page_size: 20

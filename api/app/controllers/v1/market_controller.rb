@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class V1::MarketController < ApplicationController
-  before_action :authenticate_user!, :set_item, only: :buy
+  before_action :authenticate_user!, except: :show
+  before_action :set_item, only: :buy
 
   # GET /v1/market
   def show
@@ -24,6 +25,26 @@ class V1::MarketController < ApplicationController
     render status: 201, json: history
   rescue StandardError => e
     render_unprocessable_entity(e.message)
+  end
+
+  # GET /v1/market/buy_histories
+  def buy_histories
+    histories = current_user
+                .buy_histories
+                .order(created_at: :desc)
+                .page(params[:page])
+                .per(Settings.models.market_history.page_size)
+    render json: histories
+  end
+
+  # GET /v1/market/sell_histories
+  def sell_histories
+    histories = current_user
+                .sell_histories
+                .order(created_at: :desc)
+                .page(params[:page])
+                .per(Settings.models.market_history.page_size)
+    render json: histories
   end
 
   private

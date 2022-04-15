@@ -10,8 +10,8 @@ class User < ActiveRecord::Base
   around_create :set_init_point
 
   has_many :items, class_name: 'Item', foreign_key: 'user_id', dependent: :destroy
-  has_many :sell_history, class_name: 'MarketHistory', foreign_key: 'seller_id'
-  has_many :buy_history, class_name: 'MarketHistory', foreign_key: 'buyer_id'
+  has_many :buy_histories, class_name: 'MarketHistory', foreign_key: 'buyer_id'
+  has_many :sell_histories, class_name: 'MarketHistory', foreign_key: 'seller_id'
 
   validates :name,
             presence: true,

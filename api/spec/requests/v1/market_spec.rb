@@ -144,4 +144,50 @@ RSpec.describe '/v1/market', type: :request do
       end
     end
   end
+
+  context 'histories' do
+    let!(:buyer) do
+      user = create(:user)
+      user.update!(point: 1500)
+      user
+    end
+    let!(:seller) do
+      user = create(:user)
+      user.update!(point: 0)
+      user
+    end
+    let!(:items) { 3.times.map { create(:item, user: seller, point: 500) } }
+
+    describe '#buy_histories' do
+      it '購入履歴を取得できる' do
+        items.each { |item| buyer.buy!(item) }
+        get v1_market_buy_histories_path, headers: authorized_headers(buyer)
+        expect(response.status).to eq 200
+        histories = JSON.parse(response.body)
+        expect(histories.size).to eq 3
+        expect(histories.map { |h| h['item_id'] }).to eq items.map(&:id).reverse
+      end
+
+      it 'ログインしていない場合は401を返す' do
+        get v1_market_buy_histories_path
+        expect(response.status).to eq 401
+      end
+    end
+
+    describe '#sell_histories' do
+      it '購入履歴を取得できる' do
+        items.each { |item| buyer.buy!(item) }
+        get v1_market_sell_histories_path, headers: authorized_headers(seller)
+        expect(response.status).to eq 200
+        histories = JSON.parse(response.body)
+        expect(histories.size).to eq 3
+        expect(histories.map { |h| h['item_id'] }).to eq items.map(&:id).reverse
+      end
+
+      it 'ログインしていない場合は401を返す' do
+        get v1_market_sell_histories_path
+        expect(response.status).to eq 401
+      end
+    end
+  end
 end
