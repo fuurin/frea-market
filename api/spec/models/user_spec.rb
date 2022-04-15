@@ -50,4 +50,65 @@ RSpec.describe User, type: :model do
       end.to change(Item, :count).by(-3)
     end
   end
+
+  describe '#buy!' do
+    let!(:buyer) do
+      user = create(:user)
+      user.update!(point: 1000)
+      user
+    end
+    let!(:seller) do
+      user = create(:user)
+      user.update!(point: 1000)
+      user
+    end
+    let!(:item) { create(:item, user: seller, point: 500) }
+
+    it '売買処理の実行' do
+      history = buyer.buy!(item)
+
+      expect(history).to be_truthy
+      expect(history.buyer_id).to eq buyer.id
+      expect(history.buyer_point_to).to eq 500
+      expect(history.seller_id).to eq seller.id
+      expect(history.seller_point_to).to eq 1500
+      expect(history.item_id).to eq item.id
+
+      [buyer, seller].each(&:reload)
+      expect(buyer.point).to eq 500
+      expect(seller.point).to eq 1500
+      expect(Item.find_by(id: item.id)).to be_nil
+    end
+
+    context '失敗' do
+      after do
+        expect(MarketHistory.count).to eq 0
+        [buyer, seller].each(&:reload)
+        expect(buyer.point).to eq 1000
+        expect(seller.point).to eq 1000
+        expect(Item.find_by(id: item.id)).to be_truthy
+      end
+
+      it '購入時のポイントが足りなければ何もせずエラー' do
+        item.update!(point: 10_000)
+        expect do
+          buyer.buy!(item)
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'buyerとsellerが同一の場合は何もせずエラー' do
+        item.update!(user: buyer)
+        expect do
+          buyer.buy!(item)
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'transactionの中で例外が発生した場合はロールバックする' do
+        allow_any_instance_of(Item).to receive(:destroy!).and_raise(StandardError)
+        expect do
+          buyer.buy!(item)
+        end.to raise_error(StandardError)
+      end
+    end
+  end
 end

@@ -11,12 +11,14 @@ class MarketHistory < ApplicationRecord
   validates :buyer_email,
             presence: true,
             format: { with: /#{Settings.models.user.email_format_regex}/i }
+  validates :buyer_point_to, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :seller_name,
             presence: true,
             length: { minimum: Settings.models.user.name_length.min, maximum: Settings.models.user.name_length.max }
   validates :seller_email,
             presence: true,
             format: { with: /#{Settings.models.user.email_format_regex}/i }
+  validates :seller_point_to, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :item_name,
             presence: true,
             length: { minimum: Settings.models.item.name_length.min, maximum: Settings.models.item.name_length.max }
@@ -25,14 +27,17 @@ class MarketHistory < ApplicationRecord
   validate :validate_buyer_is_not_seller
 
   class << self
-    def append!(buyer, seller, item)
+    def append!(buyer, item)
+      seller = item.user
       create!(
         buyer_id: buyer.id,
         buyer_name: buyer.name,
         buyer_email: buyer.email,
+        buyer_point_to: buyer.point - item.point,
         seller_id: seller.id,
         seller_name: seller.name,
         seller_email: seller.email,
+        seller_point_to: seller.point + item.point,
         item_id: item.id,
         item_name: item.name,
         item_description: item.description,
@@ -48,6 +53,7 @@ class MarketHistory < ApplicationRecord
       return
     end
 
-    errors.add(:base, I18n.t('models.errors.market_history.buyer_is_seller_error'))
+    message = I18n.t('activerecord.errors.models.market_history.attributes.buyer_id.buyer_is_not_seller')
+    errors.add(:buyer_id, message)
   end
 end

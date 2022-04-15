@@ -1,12 +1,18 @@
 en:
   hello: "Hello world"
+
   api:
     errors:
       bad_request: Some parameters of the request are invalid.
-      bad_request_buyer: Insufficient points to buy the item (%{} point).
       not_found: The requested resource was not found.
       unprocessable_entity: An unexpected error occured. Check the request parameters and report to the system administorator.
-  models:
+
+  activerecord:
     errors:
-      market_history:
-        buyer_is_seller_error: Seller cannot buy own item.
+      models:
+        market_history:
+          attributes:
+            buyer_point_to:
+              greater_than_or_equal_to: Insufficient points to buy the item
+            buyer_id:
+              buyer_is_not_seller: Seller cannot buy own item.

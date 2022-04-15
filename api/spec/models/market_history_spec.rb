@@ -3,18 +3,45 @@
 require 'rails_helper'
 
 RSpec.describe MarketHistory, type: :model do
-  it '作成できる' do
-    buyer, seller = 2.times.map { create(:user) }
-    item = create(:item, user: seller)
-    history = MarketHistory.append!(buyer, seller, item)
-    expect(history).to be_truthy
-  end
+  describe '#append!' do
+    let!(:buyer) do
+      user = create(:user)
+      user.update!(point: 1000)
+      user
+    end
+    let!(:seller) do
+      user = create(:user)
+      user.update!(point: 1000)
+      user
+    end
+    let!(:item) { create(:item, user: seller, point: 500) }
 
-  it 'buyerとsellerが同一の場合は作成時にエラー' do
-    seller = create(:user)
-    item = create(:item, user: seller)
-    expect do
-      MarketHistory.append!(seller, seller, item)
-    end.to raise_error(ActiveRecord::RecordInvalid)
+    it 'buyer, seller, itemを指定して売買履歴を作成できる' do
+      history = MarketHistory.append!(buyer, item)
+
+      expect(history).to be_truthy
+      expect(history.buyer_id).to eq buyer.id
+      expect(history.buyer_point_to).to eq 500
+      expect(history.seller_id).to eq seller.id
+      expect(history.seller_point_to).to eq 1500
+      expect(history.item_id).to eq item.id
+    end
+
+    context '失敗' do
+      after do
+        expect do
+          MarketHistory.append!(buyer, item)
+        end.to raise_error(ActiveRecord::RecordInvalid)
+        expect(MarketHistory.count).to eq 0
+      end
+
+      it '購入時のポイントが足りなければ作成できない' do
+        item.update!(point: 10_000)
+      end
+
+      it 'buyerとsellerが同一の場合は作成できない' do
+        item.update!(user: buyer)
+      end
+    end
   end
 end

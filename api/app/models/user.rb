@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   around_create :set_init_point
 
   has_many :items, class_name: 'Item', foreign_key: 'user_id', dependent: :destroy
+  has_many :sell_history, class_name: 'MarketHistory', foreign_key: 'seller_id'
+  has_many :buy_history, class_name: 'MarketHistory', foreign_key: 'buyer_id'
 
   validates :name,
             presence: true,
@@ -19,6 +21,16 @@ class User < ActiveRecord::Base
             format: { with: /#{Settings.models.user.email_format_regex}/i },
             uniqueness: { case_sensitive: true }
   validates :point, presence: true
+
+  def buy!(item)
+    ApplicationRecord.transaction do
+      history = MarketHistory.append!(self, item)
+      decrement!(:point, item.point)
+      item.user.increment!(:point, item.point)
+      item.destroy!
+      return history
+    end
+  end
 
   private
 

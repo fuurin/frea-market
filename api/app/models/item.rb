@@ -2,6 +2,7 @@
 
 class Item < ApplicationRecord
   belongs_to :user, class_name: 'User', foreign_key: 'user_id' # seller
+  has_one :history, class_name: 'MarketHistory', foreign_key: 'item_id'
 
   validates :name,
             presence: true,

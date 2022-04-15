@@ -31,9 +31,11 @@ ActiveRecord::Schema.define(version: 2022_04_15_050547) do
     t.bigint "buyer_id", null: false
     t.string "buyer_name", null: false
     t.string "buyer_email", null: false
+    t.integer "buyer_point_to", null: false
     t.bigint "seller_id", null: false
     t.string "seller_name", null: false
     t.string "seller_email", null: false
+    t.integer "seller_point_to", null: false
     t.bigint "item_id", null: false
     t.string "item_name", null: false
     t.string "item_description"
