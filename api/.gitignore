@@ -8,6 +8,7 @@
 /.bundle
 
 /.local
+.lesshst
 
 # Ignore all logfiles and tempfiles.
 /log/*

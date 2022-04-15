@@ -2,7 +2,7 @@ FROM ruby:2.6-alpine
 
 ARG WORKDIR
 
-ENV RUNTIME_PACKAGES="linux-headers libxml2-dev make gcc libc-dev nodejs tzdata mysql-client mysql-dev openssl git" \
+ENV RUNTIME_PACKAGES="linux-headers libxml2-dev make gcc libc-dev nodejs less tzdata mysql-client mysql-dev openssl git" \
     DEV_PACKAGES="build-base curl-dev vim less" \
     HOME=/${WORKDIR} \
     LANG=C.UTF-8 \

@@ -17,7 +17,7 @@ services:
       args:
         WORKDIR: $WORKDIR
     environment:
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
     volumes:
       - ./api:/$WORKDIR
     depends_on:
