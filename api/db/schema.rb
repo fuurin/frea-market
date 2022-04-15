@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_14_101414) do
+ActiveRecord::Schema.define(version: 2022_04_15_050547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "buy_histories", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_buy_histories_on_item_id"
+    t.index ["user_id"], name: "index_buy_histories_on_user_id"
+  end
 
   create_table "items", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -58,5 +67,7 @@ ActiveRecord::Schema.define(version: 2022_04_14_101414) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "buy_histories", "items"
+  add_foreign_key "buy_histories", "users"
   add_foreign_key "items", "users"
 end

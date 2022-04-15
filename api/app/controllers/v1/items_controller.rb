@@ -8,20 +8,20 @@ class V1::ItemsController < ApplicationController
   # GET /v1/items
   def index
     # current_userのitem一覧をページングで取得
-    items_query = Item
-                  .by_user(current_user)
-                  .order(created_at: :desc)
-                  .page(params[:page])
-                  .per(Settings.models.item.page_size)
+    items = Item
+            .by_user(current_user)
+            .order(created_at: :desc)
+            .page(params[:page])
+            .per(Settings.models.item.page_size)
 
     # デフォルトでon_saleのみ、params[:with_sold] == true で全て返す
-    @items = if params[:with_sold]
-               items_query.all
-             else
-               items_query.on_sale
-             end
+    items = if params[:with_sold]
+              items.all
+            else
+              items.on_sale
+            end
 
-    render json: @items
+    render json: items
   end
 
   # GET /v1/items/1
@@ -31,13 +31,13 @@ class V1::ItemsController < ApplicationController
 
   # POST /v1/items
   def create
-    @item = Item.new(item_params!)
-    @item.user = current_user
+    new_item = Item.new(item_params!)
+    new_item.user = current_user
 
-    if @item.save
-      render json: @item, status: :created
+    if new_item.save
+      render json: new_item, status: :created
     else
-      render json: @item.errors, status: :unprocessable_entity
+      render json: new_item.errors, status: :unprocessable_entity
     end
   rescue JSON::Schema::ValidationError => e
     render_bad_request(e.message)
