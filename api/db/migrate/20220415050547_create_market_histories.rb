@@ -18,5 +18,7 @@ class CreateMarketHistories < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+    add_index :market_histories, %i[buyer_id created_at]
+    add_index :market_histories, %i[seller_id created_at]
   end
 end

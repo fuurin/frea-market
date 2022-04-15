@@ -1,12 +1,15 @@
 services:
   db:
-    image: postgres:12.3-alpine
+    image: mysql:5.7.26
     environment:
-      TZ: JST
-      PGTZ: JST
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      MYSQL_USER: user
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+      TZ: Asia/Tokyo
+    ports:
+      - 3306:3306
     volumes:
-      - ./api/tmp/db:/var/lib/postgresql/data
+      - mysql-data:/var/lib/mysql
 
   api:
     build:
@@ -22,3 +25,7 @@ services:
     ports:
       - "$API_PORT:$CONTAINER_PORT"
     command: sh -c 'rm -f tmp/pids/server.pid && bundle && rails s -b 0.0.0.0'
+
+volumes:
+  mysql-data:
+    driver: local

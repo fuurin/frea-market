@@ -12,10 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2022_04_15_050547) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
-  create_table "items", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.string "description"
@@ -24,10 +21,11 @@ ActiveRecord::Schema.define(version: 2022_04_15_050547) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_items_on_name"
     t.index ["point"], name: "index_items_on_point"
+    t.index ["user_id", "created_at"], name: "index_items_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
-  create_table "market_histories", force: :cascade do |t|
+  create_table "market_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "buyer_id", null: false
     t.string "buyer_name", null: false
     t.string "buyer_email", null: false
@@ -42,12 +40,14 @@ ActiveRecord::Schema.define(version: 2022_04_15_050547) do
     t.integer "item_point", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["buyer_id", "created_at"], name: "index_market_histories_on_buyer_id_and_created_at"
     t.index ["buyer_id"], name: "index_market_histories_on_buyer_id"
     t.index ["item_id"], name: "index_market_histories_on_item_id"
+    t.index ["seller_id", "created_at"], name: "index_market_histories_on_seller_id_and_created_at"
     t.index ["seller_id"], name: "index_market_histories_on_seller_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
     t.string "encrypted_password", default: "", null: false

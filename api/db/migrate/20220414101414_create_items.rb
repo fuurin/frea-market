@@ -13,5 +13,6 @@ class CreateItems < ActiveRecord::Migration[6.0]
 
     add_index :items, :name
     add_index :items, :point
+    add_index :items, %i[user_id created_at]
   end
 end
