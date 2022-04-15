@@ -11,7 +11,7 @@ class V1::MarketController < ApplicationController
             .per(Settings.models.item.page_size)
 
     # ログイン中ユーザがいれば、ログイン中ユーザ自身の商品は結果に含まない。
-    if current_user.present?
+    if user_signed_in?
       items = items.where.not(user: current_user)
     end
 
