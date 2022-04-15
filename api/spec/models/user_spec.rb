@@ -40,4 +40,14 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '削除' do
+    it '紐づくitemも同時に削除される' do
+      user = create(:user)
+      3.times { create(:item, user: user) }
+      expect do
+        user.destroy!
+      end.to change(Item, :count).by(-3)
+    end
+  end
 end

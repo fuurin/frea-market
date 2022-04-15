@@ -7,13 +7,11 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.string :name, null: false
       t.string :description
       t.integer :point, null: false, default: 1
-      t.boolean :sold, null: false, default: false
 
       t.timestamps
     end
 
     add_index :items, :name
     add_index :items, :point
-    add_index :items, :sold
   end
 end

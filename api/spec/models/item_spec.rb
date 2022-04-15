@@ -32,11 +32,4 @@ RSpec.describe Item, type: :model do
       end
     end
   end
-
-  describe '#on_sale' do
-    it 'soldがfalseのレコードのみが抽出される' do
-      3.times { |i| create(:item, sold: i.odd?) }
-      expect(Item.on_sale.count).to eq 2
-    end
-  end
 end

@@ -15,27 +15,34 @@ ActiveRecord::Schema.define(version: 2022_04_15_050547) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "buy_histories", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "item_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["item_id"], name: "index_buy_histories_on_item_id"
-    t.index ["user_id"], name: "index_buy_histories_on_user_id"
-  end
-
   create_table "items", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.string "description"
     t.integer "point", default: 1, null: false
-    t.boolean "sold", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_items_on_name"
     t.index ["point"], name: "index_items_on_point"
-    t.index ["sold"], name: "index_items_on_sold"
     t.index ["user_id"], name: "index_items_on_user_id"
+  end
+
+  create_table "market_histories", force: :cascade do |t|
+    t.bigint "buyer_id", null: false
+    t.string "buyer_name", null: false
+    t.string "buyer_email", null: false
+    t.bigint "seller_id", null: false
+    t.string "seller_name", null: false
+    t.string "seller_email", null: false
+    t.bigint "item_id", null: false
+    t.string "item_name", null: false
+    t.string "item_description"
+    t.integer "item_point", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["buyer_id"], name: "index_market_histories_on_buyer_id"
+    t.index ["item_id"], name: "index_market_histories_on_item_id"
+    t.index ["seller_id"], name: "index_market_histories_on_seller_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -67,7 +74,5 @@ ActiveRecord::Schema.define(version: 2022_04_15_050547) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "buy_histories", "items"
-  add_foreign_key "buy_histories", "users"
   add_foreign_key "items", "users"
 end

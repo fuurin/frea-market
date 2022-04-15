@@ -13,14 +13,6 @@ class V1::ItemsController < ApplicationController
             .order(created_at: :desc)
             .page(params[:page])
             .per(Settings.models.item.page_size)
-
-    # デフォルトでon_saleのみ、params[:with_sold] == true で全て返す
-    items = if params[:with_sold]
-              items.all
-            else
-              items.on_sale
-            end
-
     render json: items
   end
 

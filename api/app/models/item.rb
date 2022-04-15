@@ -8,15 +8,10 @@ class Item < ApplicationRecord
             length: { minimum: Settings.models.item.name_length.min, maximum: Settings.models.item.name_length.max }
   validates :description, length: { maximum: Settings.models.item.name_length.max }
   validates :point, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :sold, inclusion: [true, false]
 
   scope :by_user, ->(user) { where(user: user) }
 
   class << self
-    def on_sale
-      where(sold: false)
-    end
-
     def params_schema
       @params_schema ||= {
         type: 'object',

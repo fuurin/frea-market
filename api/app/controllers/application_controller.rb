@@ -10,10 +10,6 @@ class ApplicationController < ActionController::API
     render status: 400, json: { errors: [*message] }
   end
 
-  def render_forbidden(message = t('api.errors.forbidden'))
-    render status: 403, json: { errors: [*message] }
-  end
-
   def render_not_found(message = t('api.errors.not_found'))
     render status: 404, json: { errors: [*message] }
   end

@@ -4,7 +4,9 @@ en:
     errors:
       bad_request: Some parameters of the request are invalid.
       bad_request_buyer: Insufficient points to buy the item (%{} point).
-      forbidden: The request is forbidden.
-      forbidden_seller: The seller of the item has already been withdrawn. You can no longer buy this item.
       not_found: The requested resource was not found.
       unprocessable_entity: An unexpected error occured. Check the request parameters and report to the system administorator.
+  models:
+    errors:
+      market_history:
+        buyer_is_seller_error: Seller cannot buy own item.

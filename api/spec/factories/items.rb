@@ -6,6 +6,5 @@ FactoryBot.define do
     sequence(:name, 1) { |n| "item_#{n}" }
     sequence(:description, 1) { |n| "description_#{n}" }
     point { 1 }
-    sold { false }
   end
 end

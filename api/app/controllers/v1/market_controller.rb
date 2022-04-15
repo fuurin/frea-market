@@ -20,13 +20,6 @@ class V1::MarketController < ApplicationController
       items = items.where.not(user: current_user)
     end
 
-    # デフォルトでon_saleのみ、params[:with_sold] == true で全て返す
-    items = if params[:with_sold]
-              items.all
-            else
-              items.on_sale
-            end
-
     render json: items
   end
 
@@ -35,8 +28,8 @@ class V1::MarketController < ApplicationController
     ApplicationRecord.transaction do
       current_user.increment!(:point, @item.point)
       @seller.decrement!(:point, @item.point)
-      @item.update!(sold: true)
-      BuyHistory.create!(user: current_user, item: @item)
+      MarketHistory.append!(current_user, @seller, @item)
+      @item.destroy!
     end
   rescue StandardError => e
     render_unprocessable_entity(e.message)
@@ -49,13 +42,6 @@ class V1::MarketController < ApplicationController
     @item = Item.find(params[:id])
   rescue ActiveRecord::RecordNotFound => _e
     render_not_found
-  end
-
-  # 購入する商品に紐づくユーザが存在しなければ購入できない
-  def set_seller
-    @seller = User.find(@item.user_id)
-  rescue ActiveRecord::RecordNotFound => _e
-    render_forbidden(t('api.errors.forbidden_seller'))
   end
 
   # ポイントが足りなければ購入できない

@@ -2,7 +2,8 @@
 init:
 	docker-compose down
 	docker-compose up
-	make db_init
+	docker-compose exec api rails db:migrate:reset
+	docker-compose exec api rails db:seed
 
 # コンテナに加え、それらに結びつくボリューム(DB, registry等)も削除
 clean:

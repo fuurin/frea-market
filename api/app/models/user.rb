@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   around_create :set_init_point
 
-  has_many :items, class_name: 'Item', foreign_key: 'user_id'
+  has_many :items, class_name: 'Item', foreign_key: 'user_id', dependent: :destroy
 
   validates :name,
             presence: true,

@@ -6,7 +6,7 @@ RSpec.describe '/v1/items', type: :request do
   let!(:user) { create(:user) }
 
   describe 'GET #index' do
-    it 'ログインしているユーザの商品をページングで取得できる' do
+    it 'ログインしているユーザの販売中の商品をページングで取得できる' do
       page_size = Settings.models.item.page_size
       user_items = (page_size + 1).times.map { create(:item, user: user) }
       another_user = create(:user)
@@ -25,24 +25,8 @@ RSpec.describe '/v1/items', type: :request do
       expect(items.first['id']).to eq user_items.first.id
     end
 
-    it 'ログインしているユーザのまだ売れていない商品のみを取得できる' do
-      3.times.map { |i| create(:item, user: user, sold: i.odd?) }
-      get v1_items_path, headers: authorized_headers(user)
-      expect(response.status).to eq 200
-      items = JSON.parse(response.body)
-      expect(items.size).to eq 2
-    end
-
-    it 'only_on_sale=falseを渡すと、既に売れた商品も含めて取得できる' do
-      3.times.map { |i| create(:item, user: user, sold: i.odd?) }
-      get v1_items_path, params: { with_sold: true }, headers: authorized_headers(user)
-      expect(response.status).to eq 200
-      items = JSON.parse(response.body)
-      expect(items.size).to eq 3
-    end
-
     it '1つも商品がなかったときでも200を返す' do
-      get v1_items_path, params: { with_sold: true }, headers: authorized_headers(user)
+      get v1_items_path, headers: authorized_headers(user)
       expect(response.status).to eq 200
       items = JSON.parse(response.body)
       expect(items.size).to eq 0
