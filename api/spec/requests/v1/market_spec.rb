@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'parallel'
 
 RSpec.describe '/v1/market', type: :request do
-  describe 'GET #show' do
+  describe 'GET #show', openapi: {
+    summary: '出品中商品一覧エンドポイント'
+  } do
     let(:users) { 3.times.map { create(:user) } }
 
     context 'ログインしていないとき' do
@@ -72,7 +75,9 @@ RSpec.describe '/v1/market', type: :request do
     end
   end
 
-  describe 'POST #buy' do
+  describe 'POST #buy', openapi: {
+    summary: '出品中商品購入エンドポイント'
+  } do
     let!(:buyer) do
       user = create(:user)
       user.update!(point: 1000)
@@ -143,6 +148,26 @@ RSpec.describe '/v1/market', type: :request do
         expect(response.status).to eq 422
       end
     end
+
+    it '近いタイミングで商品が購入されたとき、最初に購入したユーザのみが購入に成功する' do
+      users = 10.times.map do
+        user = create(:user)
+        user.update!(point: 1000)
+        user
+      end
+
+      first_user = nil
+      Parallel.each(users, in_threads: 4) do |user|
+        post v1_market_buy_path(item), headers: authorized_headers(user)
+        first_user ||= user
+      end
+
+      expect(MarketHistory.count).to eq 1
+      [first_user, *users].each(&:reload)
+      expect(first_user.point).to eq 500
+      expect(users.filter { |user| user.id != first_user.id }.map(&:point)).to eq [1000] * (users.size - 1)
+      expect(Item.find_by(id: item.id)).to be_nil
+    end
   end
 
   context 'histories' do
@@ -158,7 +183,9 @@ RSpec.describe '/v1/market', type: :request do
     end
     let!(:items) { 3.times.map { create(:item, user: seller, point: 500) } }
 
-    describe '#buy_histories' do
+    describe '#buy_histories', openapi: {
+      summary: '商品購入履歴エンドポイント'
+    } do
       it '購入履歴を取得できる' do
         items.each { |item| buyer.buy!(item) }
         get v1_market_buy_histories_path, headers: authorized_headers(buyer)
@@ -174,7 +201,9 @@ RSpec.describe '/v1/market', type: :request do
       end
     end
 
-    describe '#sell_histories' do
+    describe '#sell_histories', openapi: {
+      summary: '商品販売履歴エンドポイント'
+    } do
       it '購入履歴を取得できる' do
         items.each { |item| buyer.buy!(item) }
         get v1_market_sell_histories_path, headers: authorized_headers(seller)

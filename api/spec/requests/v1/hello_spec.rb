@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'V1::Hello', type: :request do
-  describe 'GET /v1/hello' do
+  describe 'GET /v1/hello', openapi: {
+    summary: '動作確認用エンドポイント'
+  } do
     it 'Helloを返す' do
       get v1_hello_index_path
       expect(response).to have_http_status(200)
@@ -11,7 +13,9 @@ RSpec.describe 'V1::Hello', type: :request do
     end
   end
 
-  describe 'GET /v1/hello/1' do
+  describe 'GET /v1/hello/1', openapi: {
+    summary: 'ログイン状態動作確認用エンドポイント'
+  } do
     it '非ログイン状態では401を返す' do
       get v1_hello_path(1)
       expect(response).to have_http_status(401)

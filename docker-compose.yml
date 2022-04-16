@@ -26,6 +26,16 @@ services:
       - "$API_PORT:$CONTAINER_PORT"
     command: sh -c 'rm -f tmp/pids/server.pid && bundle && rails s -b 0.0.0.0'
 
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: "swagger-ui"
+    ports:
+      - 3001:8080
+    volumes:
+      - ./api/doc/openapi.yaml:/usr/share/nginx/html/openapi.yaml
+    environment:
+      API_URL: openapi.yaml
+
 volumes:
   mysql-data:
     driver: local

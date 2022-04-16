@@ -5,7 +5,9 @@ require 'rails_helper'
 RSpec.describe '/v1/items', type: :request do
   let!(:user) { create(:user) }
 
-  describe 'GET #index' do
+  describe 'GET #index', openapi: {
+    summary: 'ログイン中ユーザの出品中商品一覧エンドポイント'
+  } do
     it 'ログインしているユーザの販売中の商品をページングで取得できる' do
       page_size = Settings.models.item.page_size
       user_items = (page_size + 1).times.map { create(:item, user: user) }
@@ -38,7 +40,9 @@ RSpec.describe '/v1/items', type: :request do
     end
   end
 
-  describe 'GET #show' do
+  describe 'GET #show', openapi: {
+    summary: '出品中単体商品情報取得エンドポイント'
+  } do
     let(:item) { create(:item, user: user) }
 
     it 'idに対する商品のデータがあれば200で返す' do
@@ -53,7 +57,9 @@ RSpec.describe '/v1/items', type: :request do
     end
   end
 
-  describe 'POST #create' do
+  describe 'POST #create', openapi: {
+    summary: 'ログイン中ユーザの商品出品エンドポイント'
+  } do
     let(:valid_item_params) { { name: 'item_a', description: 'description_a', point: 100 } }
 
     it '新規作成に成功' do
@@ -89,7 +95,9 @@ RSpec.describe '/v1/items', type: :request do
     end
   end
 
-  describe 'PATCH #update' do
+  describe 'PATCH #update', openapi: {
+    summary: 'ログイン中ユーザの出品中商品編集エンドポイント'
+  } do
     let!(:item_to_update) { create(:item, user: user, name: 'item_a', description: 'description_a', point: 100) }
     let(:valid_item_params) { { name: 'item_b', description: 'description_b', point: 200 } }
 
@@ -121,7 +129,9 @@ RSpec.describe '/v1/items', type: :request do
     end
   end
 
-  describe 'DELETE #destroy' do
+  describe 'DELETE #destroy', openapi: {
+    summary: 'ログイン中ユーザの商品削除エンドポイント'
+  } do
     let!(:item) { create(:item, user: user) }
 
     it 'idに対する商品のデータがあれば削除して204を返す' do

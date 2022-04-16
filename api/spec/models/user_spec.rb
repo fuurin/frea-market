@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'parallel'
 
 RSpec.describe User, type: :model do
   describe '作成' do
@@ -109,6 +110,28 @@ RSpec.describe User, type: :model do
           buyer.buy!(item)
         end.to raise_error(StandardError)
       end
+    end
+
+    it '近いタイミングで商品が購入されたとき、最初に購入したユーザのみが購入に成功する' do
+      users = 30.times.map do
+        user = create(:user)
+        user.update!(point: 1000)
+        user
+      end
+
+      first_user = nil
+      Parallel.each(users, in_threads: 4) do |user|
+        user.buy!(item)
+        first_user ||= user
+      rescue StandardError
+        nil
+      end
+
+      expect(MarketHistory.count).to eq 1
+      [first_user, *users].each(&:reload)
+      expect(first_user.point).to eq 500
+      expect(users.filter { |user| user.id != first_user.id }.map(&:point)).to eq [1000] * (users.size - 1)
+      expect(Item.find_by(id: item.id)).to be_nil
     end
   end
 end

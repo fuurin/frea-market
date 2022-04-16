@@ -24,6 +24,10 @@ r: # rails
 c:
 	docker-compose exec api rails c
 
+gs:
+	rm -f ./api/doc/openapi.yaml
+	docker-compose exec api sh -c 'OPENAPI=1 rspec spec/requests/'
+
 # migrationファイルを読み込んでschemaを更新しつつseedする
 db_init:
 	docker-compose restart db

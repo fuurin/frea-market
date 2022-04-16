@@ -1,0 +1,974 @@
+---
+openapi: 3.0.3
+info:
+  title: frea-market-api
+  version: 1.0.0
+  description: ユーザが商品を出品し、ユーザ同士でポイントを介して商品を売買することができるAPIです。
+servers:
+- url: http://localhost:3000
+paths:
+  "/v1/auth":
+    post:
+      summary: ユーザ登録用エンドポイント
+      tags:
+      - V1::Auth::Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                confirm_pasword:
+                  type: string
+            example:
+              name: example
+              email: example@example.com
+              password: password
+              confirm_pasword: password
+      responses:
+        '200':
+          description: ユーザ登録に成功すると200を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      provider:
+                        type: string
+                      uid:
+                        type: string
+                      allow_password_change:
+                        type: boolean
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      point:
+                        type: integer
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+              example:
+                status: success
+                data:
+                  id: 1
+                  provider: email
+                  uid: example@example.com
+                  allow_password_change: false
+                  name: example
+                  email: example@example.com
+                  point: 10000
+                  created_at: '2022-04-16T07:22:02.175+09:00'
+                  updated_at: '2022-04-16T07:22:02.189+09:00'
+        '422':
+          description: 必須パラメータが欠けていたら422を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    properties:
+                      name:
+                        type: array
+                        items:
+                          type: string
+                      full_messages:
+                        type: array
+                        items:
+                          type: string
+                      email:
+                        type: array
+                        items:
+                          type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      provider:
+                        type: string
+                      uid:
+                        type: string
+                      allow_password_change:
+                        type: boolean
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      point:
+                        type: integer
+                      created_at:
+                        nullable: true
+                      updated_at:
+                        nullable: true
+              example:
+                success: false
+                errors:
+                - Please submit proper sign up data in request body.
+                status: error
+                data:
+                  id:
+                  provider: email
+                  uid: ''
+                  allow_password_change: false
+                  name: aaaaaaaaaaaaaaaaaaaaa
+                  email: example@example.com
+                  point: 0
+                  created_at:
+                  updated_at:
+  "/v1/auth/sign_in":
+    post:
+      summary: ログイン用エンドポイント
+      tags:
+      - V1::Auth::Session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              email: example@example.com
+              password: password
+      responses:
+        '200':
+          description: ログインに成功したら200を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      provider:
+                        type: string
+                      name:
+                        type: string
+                      point:
+                        type: integer
+                      uid:
+                        type: string
+                      allow_password_change:
+                        type: boolean
+              example:
+                data:
+                  id: 3
+                  email: example@example.com
+                  provider: email
+                  name: example
+                  point: 10000
+                  uid: example@example.com
+                  allow_password_change: false
+        '401':
+          description: ログインに失敗したら401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                success: false
+                errors:
+                - Invalid login credentials. Please try again.
+  "/v1/hello":
+    get:
+      summary: 動作確認用エンドポイント
+      tags:
+      - V1::Hello
+      responses:
+        '200':
+          description: Helloを返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Hello
+  "/v1/hello/{id}":
+    get:
+      summary: ログイン状態動作確認用エンドポイント
+      tags:
+      - V1::Hello
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 1
+      responses:
+        '401':
+          description: 非ログイン状態では401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+        '200':
+          description: ログイン状態では200でHello {name}を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Hello user_1
+  "/v1/items":
+    get:
+      summary: ログイン中ユーザの出品中商品一覧エンドポイント
+      tags:
+      - V1::Item
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        example: 2
+      responses:
+        '200':
+          description: ログインしているユーザの販売中の商品をページングで取得できる
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    point:
+                      type: integer
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+                  nullable: true
+              example:
+              - id: 1
+                user_id: 6
+                name: item_1
+                description: description_1
+                point: 1
+                created_at: '2022-04-16T07:22:03.212+09:00'
+                updated_at: '2022-04-16T07:22:03.212+09:00'
+        '401':
+          description: ログインしていなければ401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+    post:
+      summary: ログイン中ユーザの商品出品エンドポイント
+      tags:
+      - V1::Item
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    point:
+                      type: integer
+            example:
+              item:
+                name: item_a
+                description: description_a
+                point: 100
+      responses:
+        '201':
+          description: 新規作成に成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  user_id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  point:
+                    type: integer
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+              example:
+                id: 26
+                user_id: 12
+                name: item_a
+                description: description_a
+                point: 100
+                created_at: '2022-04-16T07:22:04.074+09:00'
+                updated_at: '2022-04-16T07:22:04.074+09:00'
+        '400':
+          description: リクエストパラメータの検証で失敗すると何もせず400を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - The property '#/point' did not have a minimum value of 1, inclusively
+        '401':
+          description: ログインしていなければ何もせず401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+        '422':
+          description: 保存に失敗すると何もせず422を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              example: {}
+  "/v1/items/{id}":
+    get:
+      summary: 出品中単体商品情報取得エンドポイント
+      tags:
+      - V1::Item
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 25
+      responses:
+        '200':
+          description: idに対する商品のデータがあれば200で返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  user_id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  point:
+                    type: integer
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+              example:
+                id: 25
+                user_id: 10
+                name: item_25
+                description: description_25
+                point: 1
+                created_at: '2022-04-16T07:22:03.872+09:00'
+                updated_at: '2022-04-16T07:22:03.872+09:00'
+        '404':
+          description: idに対する商品のデータが存在しなければ404を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - The requested resource was not found.
+    patch:
+      summary: ログイン中ユーザの出品中商品編集エンドポイント
+      tags:
+      - V1::Item
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 27
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    point:
+                      type: integer
+            example:
+              item:
+                name: item_b
+                description: description_b
+                point: 200
+      responses:
+        '200':
+          description: 更新に成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  point:
+                    type: integer
+                  user_id:
+                    type: integer
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+              example:
+                id: 27
+                name: item_b
+                description: description_b
+                point: 200
+                user_id: 16
+                created_at: '2022-04-16T07:22:04.430+09:00'
+                updated_at: '2022-04-16T07:22:04.503+09:00'
+        '400':
+          description: リクエストパラメータの検証で失敗すると何もせず400を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - The property '#/point' did not have a minimum value of 1, inclusively
+        '401':
+          description: ログインしていなければ何もせず401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+        '422':
+          description: 保存に失敗すると何もせず422を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              example: {}
+    delete:
+      summary: ログイン中ユーザの商品削除エンドポイント
+      tags:
+      - V1::Item
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 31
+      responses:
+        '204':
+          description: idに対する商品のデータがあれば削除して204を返す
+          content:
+            '':
+              schema:
+                type: string
+              example: ''
+        '401':
+          description: ログインしていなければ何もせず401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+        '404':
+          description: idに対する商品のデータが存在しなければ何もせず404を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - The requested resource was not found.
+  "/v1/market":
+    get:
+      summary: 出品中商品一覧エンドポイント
+      tags:
+      - V1::Market
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+        example: 2
+      responses:
+        '200':
+          description: 販売されている全ての商品をページングで取得できる
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    point:
+                      type: integer
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+              example:
+              - id: 35
+                user_id: 25
+                name: item_30
+                description: description_30
+                point: 1
+                created_at: '2022-04-16T07:22:05.543+09:00'
+                updated_at: '2022-04-16T07:22:05.543+09:00'
+  "/v1/market/buy/{item_id}":
+    post:
+      summary: 出品中商品購入エンドポイント
+      tags:
+      - V1::Market
+      parameters:
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 105
+      responses:
+        '201':
+          description: 購入に成功すると201を返し、売買履歴を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  buyer_id:
+                    type: integer
+                  buyer_name:
+                    type: string
+                  buyer_email:
+                    type: string
+                  buyer_point_to:
+                    type: integer
+                  seller_id:
+                    type: integer
+                  seller_name:
+                    type: string
+                  seller_email:
+                    type: string
+                  seller_point_to:
+                    type: integer
+                  item_id:
+                    type: integer
+                  item_name:
+                    type: string
+                  item_description:
+                    type: string
+                  item_point:
+                    type: integer
+                  created_at:
+                    type: string
+                  updated_at:
+                    type: string
+              example:
+                id: 1
+                buyer_id: 39
+                buyer_name: user_35
+                buyer_email: example35@example.com
+                buyer_point_to: 500
+                seller_id: 40
+                seller_name: user_36
+                seller_email: example36@example.com
+                seller_point_to: 1500
+                item_id: 105
+                item_name: item_100
+                item_description: description_100
+                item_point: 500
+                created_at: '2022-04-16T07:22:06.847+09:00'
+                updated_at: '2022-04-16T07:22:06.847+09:00'
+        '401':
+          description: ログインしていなければ401を返し、何もしない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+        '404':
+          description: 購入する商品が存在しなければ404を返し、何もしない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - The requested resource was not found.
+        '422':
+          description: 購入時のポイントが足りなければ422を返し、何もしない
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - 'Validation failed: Buyer point to Insufficient points to buy the
+                  item'
+  "/v1/market/buy_histories":
+    get:
+      summary: 商品購入履歴エンドポイント
+      tags:
+      - V1::Market
+      responses:
+        '200':
+          description: 購入履歴を取得できる
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    buyer_id:
+                      type: integer
+                    buyer_name:
+                      type: string
+                    buyer_email:
+                      type: string
+                    buyer_point_to:
+                      type: integer
+                    seller_id:
+                      type: integer
+                    seller_name:
+                      type: string
+                    seller_email:
+                      type: string
+                    seller_point_to:
+                      type: integer
+                    item_id:
+                      type: integer
+                    item_name:
+                      type: string
+                    item_description:
+                      type: string
+                    item_point:
+                      type: integer
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+              example:
+              - id: 5
+                buyer_id: 51
+                buyer_name: user_47
+                buyer_email: example47@example.com
+                buyer_point_to: 0
+                seller_id: 52
+                seller_name: user_48
+                seller_email: example48@example.com
+                seller_point_to: 1500
+                item_id: 113
+                item_name: item_108
+                item_description: description_108
+                item_point: 500
+                created_at: '2022-04-16T07:22:09.217+09:00'
+                updated_at: '2022-04-16T07:22:09.217+09:00'
+              - id: 4
+                buyer_id: 51
+                buyer_name: user_47
+                buyer_email: example47@example.com
+                buyer_point_to: 500
+                seller_id: 52
+                seller_name: user_48
+                seller_email: example48@example.com
+                seller_point_to: 1000
+                item_id: 112
+                item_name: item_107
+                item_description: description_107
+                item_point: 500
+                created_at: '2022-04-16T07:22:09.184+09:00'
+                updated_at: '2022-04-16T07:22:09.184+09:00'
+              - id: 3
+                buyer_id: 51
+                buyer_name: user_47
+                buyer_email: example47@example.com
+                buyer_point_to: 1000
+                seller_id: 52
+                seller_name: user_48
+                seller_email: example48@example.com
+                seller_point_to: 500
+                item_id: 111
+                item_name: item_106
+                item_description: description_106
+                item_point: 500
+                created_at: '2022-04-16T07:22:09.156+09:00'
+                updated_at: '2022-04-16T07:22:09.156+09:00'
+        '401':
+          description: ログインしていない場合は401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+  "/v1/market/sell_histories":
+    get:
+      summary: 商品販売履歴エンドポイント
+      tags:
+      - V1::Market
+      responses:
+        '200':
+          description: 購入履歴を取得できる
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    buyer_id:
+                      type: integer
+                    buyer_name:
+                      type: string
+                    buyer_email:
+                      type: string
+                    buyer_point_to:
+                      type: integer
+                    seller_id:
+                      type: integer
+                    seller_name:
+                      type: string
+                    seller_email:
+                      type: string
+                    seller_point_to:
+                      type: integer
+                    item_id:
+                      type: integer
+                    item_name:
+                      type: string
+                    item_description:
+                      type: string
+                    item_point:
+                      type: integer
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+              example:
+              - id: 8
+                buyer_id: 55
+                buyer_name: user_51
+                buyer_email: example51@example.com
+                buyer_point_to: 0
+                seller_id: 56
+                seller_name: user_52
+                seller_email: example52@example.com
+                seller_point_to: 1500
+                item_id: 119
+                item_name: item_114
+                item_description: description_114
+                item_point: 500
+                created_at: '2022-04-16T07:22:09.578+09:00'
+                updated_at: '2022-04-16T07:22:09.578+09:00'
+              - id: 7
+                buyer_id: 55
+                buyer_name: user_51
+                buyer_email: example51@example.com
+                buyer_point_to: 500
+                seller_id: 56
+                seller_name: user_52
+                seller_email: example52@example.com
+                seller_point_to: 1000
+                item_id: 118
+                item_name: item_113
+                item_description: description_113
+                item_point: 500
+                created_at: '2022-04-16T07:22:09.565+09:00'
+                updated_at: '2022-04-16T07:22:09.565+09:00'
+              - id: 6
+                buyer_id: 55
+                buyer_name: user_51
+                buyer_email: example51@example.com
+                buyer_point_to: 1000
+                seller_id: 56
+                seller_name: user_52
+                seller_email: example52@example.com
+                seller_point_to: 500
+                item_id: 117
+                item_name: item_112
+                item_description: description_112
+                item_point: 500
+                created_at: '2022-04-16T07:22:09.551+09:00'
+                updated_at: '2022-04-16T07:22:09.551+09:00'
+        '401':
+          description: ログインしていない場合は401を返す
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.

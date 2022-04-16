@@ -36,6 +36,7 @@ group :development, :test do
   gem 'hirb'
   gem 'pry-rails'
   gem 'rails-flog'
+  gem 'rspec-openapi'
   gem 'rspec-rails'
   gem 'simplecov'
 end

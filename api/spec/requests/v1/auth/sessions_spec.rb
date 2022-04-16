@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'V1::Auth::Sessions', type: :request do
-  describe 'POST /v1/auth/sign_in' do
+  describe 'POST /v1/auth/sign_in', openapi: {
+    summary: 'ログイン用エンドポイント'
+  } do
     let(:user_params) do
       {
         name: 'example',

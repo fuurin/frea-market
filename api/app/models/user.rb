@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   validates :point, presence: true
 
   def buy!(item)
-    ApplicationRecord.transaction do
+    item.with_lock do
       history = MarketHistory.append!(self, item)
       decrement!(:point, item.point)
       item.user.increment!(:point, item.point)

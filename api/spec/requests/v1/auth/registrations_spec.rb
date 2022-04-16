@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'V1::Auth::Registrations', type: :request do
-  describe 'POST /v1/auth/sign_up' do
+  describe 'POST /v1/auth/sign_up', openapi: {
+    summary: 'ユーザ登録用エンドポイント'
+  } do
     let(:valid_params) do
       {
         name: 'example',
