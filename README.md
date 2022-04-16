@@ -14,9 +14,9 @@ Ruby on Railsで実装されており、ローカル環境ではDocker上で動�
 
 ### API仕様書
 `docker-compose up`している状態で http://localhost:3001 へアクセスすることで、Open APIによるAPI仕様書を確認できます。  
-[rspec-openapi](https://github.com/k0kubun/rspec-openapi)によって、rspecのテスト実行時にopenapi.ymlを作成・更新することができます。
-`make gs`でrequests specを実行してAPI仕様書を作り直すことができます。
-(現状、自動では同じステータスコードのAPI仕様に複数のspecを反映することができないようです...全てのspecを確認したい場合は実際のテストコードを御覧ください。)
+[rspec-openapi](https://github.com/k0kubun/rspec-openapi)によって、rspecのテスト実行時にopenapi.ymlを作成・更新することができます。  
+`make gs`でrequests specを実行してAPI仕様書を作り直すことができます。  
+(現状、自動では同じステータスコードのAPI仕様に複数のspecを自動で反映する方法は見当たりませんでした...全てのspecを確認したい場合は実際のテストコードを御覧ください。)
 
 ## 使い方
 基本的に`curl`コマンドを使って説明しますが、適宜[Advanced REST client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=ja)のようなHTTPクライアントを利用すると便利です。
@@ -98,7 +98,7 @@ curl localhost:3000/v1/hello/1 \
   "message": "Hello example"
 }
 ```
-ログインが必要なページにアクセスし、ログイン中ユーザのexampleという名前に対して Hello example というメッセージが返ってきています。
+ログインが必要なページにアクセスし、ログイン中ユーザのexampleという名前に対して Hello example というメッセージが返ってきています。  
 (以降はログイン判定用のヘッダーには動作確認時のトークンを入れるため、ご自身の環境で取得したものに適宜読み替えてください。)
 
 ### 商品の管理
@@ -200,7 +200,7 @@ curl localhost:3000/v1/items \
 []
 ```
 
-現在出品中の全商品の情報を出品された順に取得できます。ログイン中は、自分の商品を結果に含みません。
+現在出品中の全商品の情報を出品された順に取得できます。ログイン中は、自分の商品を結果に含みません。  
 一度に最大20件を取得することができ、それ以降は`page`に2以上のパラメータを設置することで次の20件を取得していくことができます。
 ``` bash
 curl localhost:3000/v1/market \
@@ -253,7 +253,8 @@ curl localhost:3000/v1/items \
 }
 ```
 
-最初に作成したユーザでログインし直し、商品を購入します。 (ログイン中のユーザ自身の商品を購入することはできません)
+最初に作成したユーザでログインし直し、商品を購入します。  
+(ログイン中のユーザ自身の商品を購入することはできません)
 ``` bash
 curl localhost:3000/v1/auth/sign_in \
       -X POST \
@@ -403,7 +404,7 @@ curl localhost:3000/v1/market/sell_histories \
 
 ### 同時リクエストに気を配る
 本APIでは、同じ商品が同時にアクセスした複数のユーザに重複して購入されたり、購入処理中に値段が変わってしまったりように注意しなければなりません。  
-この問題には、購入処理トランザクション中に商品テーブル及びユーザテーブルに悲観的ロックをかけることで対応しています。
+この問題には、購入処理トランザクション中に対象商品レコード及び対象売買ユーザレコードに悲観的ロックをかけることで対応しています。
 
 実際のコードは以下をご覧ください。
 - api/app/models/user.rb#buy
