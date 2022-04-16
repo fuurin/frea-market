@@ -120,7 +120,7 @@ RSpec.describe User, type: :model do
       end
 
       first_user = nil
-      Parallel.each(users, in_threads: 4) do |user|
+      Parallel.each(users, in_threads: 10) do |user|
         user.buy!(item)
         first_user ||= user
       rescue StandardError

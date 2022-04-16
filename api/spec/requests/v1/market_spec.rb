@@ -150,14 +150,14 @@ RSpec.describe '/v1/market', type: :request do
     end
 
     it '近いタイミングで商品が購入されたとき、最初に購入したユーザのみが購入に成功する' do
-      users = 10.times.map do
+      users = 30.times.map do
         user = create(:user)
         user.update!(point: 1000)
         user
       end
 
       first_user = nil
-      Parallel.each(users, in_threads: 4) do |user|
+      Parallel.each(users, in_threads: 10) do |user|
         post v1_market_buy_path(item), headers: authorized_headers(user)
         first_user ||= user
       end

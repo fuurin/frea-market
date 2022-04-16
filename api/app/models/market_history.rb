@@ -2,9 +2,9 @@
 
 class MarketHistory < ApplicationRecord
   # belongs_toはcreate時自動でリレーション先のレコードが存在するかをチェックする
-  belongs_to :buyer, class_name: 'User', foreign_key: 'buyer_id'
-  belongs_to :seller, class_name: 'User', foreign_key: 'seller_id'
-  belongs_to :item, class_name: 'Item', foreign_key: 'item_id'
+  belongs_to :buyer, class_name: 'User', foreign_key: 'buyer_id', optional: true
+  belongs_to :seller, class_name: 'User', foreign_key: 'seller_id', optional: true
+  belongs_to :item, class_name: 'Item', foreign_key: 'item_id', optional: true
 
   validates :buyer_name,
             presence: true,
