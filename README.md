@@ -132,11 +132,25 @@ curl localhost:3000/v1/market/buy/11 -X POST -H "content-type:application/json" 
 {"id":1,"buyer_id":4,"buyer_name":"example","buyer_email":"example@example.com","buyer_point_to":9900,"seller_id":5,"seller_name":"seller","seller_email":"seller@example.com","seller_point_to":10100,"item_id":11,"item_name":"example item","item_description":"example description","item_point":100,"created_at":"2022-04-16T08:10:17.682+09:00","updated_at":"2022-04-16T08:10:17.682+09:00"}
 ```
 
+商品を購入したユーザのポイント残高が少なくなったことが分かります
+``` bash
+curl localhost:3000/v1/auth/user -H "content-type:application/json" -H "access-token:e_h5nkefXu4RxVMChvKLiQ" -H "client:Q6TpmBk9gH9t1H8kskPC3Q" -H "uid:example@example.com"
+
+{"id":4,"provider":"email","uid":"example@example.com","allow_password_change":false,"name":"example","email":"example@example.com","point":9900,"created_at":"2022-04-16T07:30:09.035+09:00","updated_at":"2022-04-16T08:09:04.248+09:00"}%
+```
+
 ログイン中のユーザが購入した商品の履歴を確認することができます。20件ずつのページングになっています。
 ``` bash
 curl localhost:3000/v1/market/buy_histories -H "content-type:application/json" -H "access-token:e_h5nkefXu4RxVMChvKLiQ" -H "client:Q6TpmBk9gH9t1H8kskPC3Q" -H "uid:example@example.com"
 
 [{"id":1,"buyer_id":4,"buyer_name":"example","buyer_email":"example@example.com","buyer_point_to":9900,"seller_id":5,"seller_name":"seller","seller_email":"seller@example.com","seller_point_to":10100,"item_id":11,"item_name":"example item","item_description":"example description","item_point":100,"created_at":"2022-04-16T08:10:17.682+09:00","updated_at":"2022-04-16T08:10:17.682+09:00"}]
+```
+
+商品を販売したユーザのポイント残高が多くなったことが分かります。
+``` bash
+curl localhost:3000/v1/auth/user -H "content-type:application/json" -H "access-token:m2dur4iunp1XOqySaaaXnw" -H "client:-TCTVBj1Luijwew_jMUdIg" -H "uid:seller@example.com"
+
+{"id":5,"provider":"email","uid":"seller@example.com","allow_password_change":false,"name":"seller","email":"seller@example.com","point":10100,"created_at":"2022-04-16T08:01:13.479+09:00","updated_at":"2022-04-16T08:16:59.828+09:00"}
 ```
 
 ログイン中のユーザが販売した商品の履歴を確認することができます。20件ずつのページングになっています。
@@ -145,11 +159,8 @@ curl localhost:3000/v1/auth/sign_in -X POST -d '{"email":"seller@example.com", "
 
 curl localhost:3000/v1/market/sell_histories -H "content-type:application/json" -H "access-token:m2dur4iunp1XOqySaaaXnw" -H "client:-TCTVBj1Luijwew_jMUdIg" -H "uid:seller@example.com"
 
-curl localhost:3000/v1/market/sell_histories -H "content-type:application/json" -H "access-token:m2dur4iunp1XOqySaaaXnw" -H "client:-TCTVBj1Luijwew_jMUdIg" -H "uid:seller@example.com"
-
 [{"id":1,"buyer_id":4,"buyer_name":"example","buyer_email":"example@example.com","buyer_point_to":9900,"seller_id":5,"seller_name":"seller","seller_email":"seller@example.com","seller_point_to":10100,"item_id":11,"item_name":"example item","item_description":"example description","item_point":100,"created_at":"2022-04-16T08:10:17.682+09:00","updated_at":"2022-04-16T08:10:17.682+09:00"}]
 ```
-
 
 ## 開発詳細
 

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       sessions: 'v1/auth/sessions',
       registrations: 'v1/auth/registrations'
     }
+    get 'auth/user', to: 'auth/user#show'
     resources :hello, only: %i[index show]
     resources :items
     get  'market', to: 'market#show'

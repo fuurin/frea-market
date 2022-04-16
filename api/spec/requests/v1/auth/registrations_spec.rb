@@ -66,4 +66,74 @@ RSpec.describe 'V1::Auth::Registrations', type: :request do
       end
     end
   end
+
+  describe 'PATCH v1_user_registration_path', openapi: {
+    summary: 'ユーザ情報編集用エンドポイント'
+  } do
+    let!(:user) { create(:user, name: 'hoge', email: 'example@example.com') }
+
+    it 'ユーザ情報の編集に成功すると200を返す' do
+      patch v1_user_registration_path, params: { name: 'fuga' }, headers: authorized_headers(user), as: :json
+      expect(response.status).to eq 200
+      user.reload
+      expect(user.name).to eq 'fuga'
+
+      patch v1_user_registration_path, params: { email: 'piyo@example.com' }, headers: authorized_headers(user), as: :json
+      expect(response.status).to eq 200
+      user.reload
+      expect(user.email).to eq 'piyo@example.com'
+    end
+
+    it 'ログインしていなければ404を返す' do
+      patch v1_user_registration_path, params: { name: 'fuga' }, as: :json
+      expect(response.status).to eq 404
+    end
+
+    it '編集したemailが重複する場合は編集できず422を返す' do
+      create(:user, email: 'hoge@example.com')
+
+      patch v1_user_registration_path, params: { email: 'hoge@example.com' }, headers: authorized_headers(user), as: :json
+      expect(response.status).to eq 422
+    end
+  end
+
+  describe 'PATCH v1_user_password_path', openapi: {
+    summary: 'ユーザパスワード変更用エンドポイント',
+    tags: %w[V1::Auth::Password]
+  } do
+    let!(:user) { create(:user) }
+
+    it 'パスワードの編集に成功すると200を返し、そのパスワードでログインできる' do
+      patch v1_user_password_path,
+            params: { password: 'new_password', password_confirmation: 'new_password' },
+            headers: authorized_headers(user),
+            as: :json
+      expect(response.status).to eq 200
+
+      post v1_user_session_path, params: { email: user.email, password: 'new_password' }, as: :json
+      expect(response.status).to eq 200
+    end
+
+    it 'ログインしていなければ404を返す' do
+      patch v1_user_password_path, params: { password: 'new_password', password_confirmation: 'new_password' }, as: :json
+      expect(response.status).to eq 401
+    end
+  end
+
+  describe 'DELETE v1_user_registration_path', openapi: {
+    summary: 'ユーザ削除用エンドポイント'
+  } do
+    let!(:user) { create(:user) }
+
+    it 'ユーザの削除に成功すると200を返す' do
+      delete v1_user_registration_path, headers: authorized_headers(user)
+      expect(response.status).to eq 200
+      expect(User.find_by(id: user.id)).to be_nil
+    end
+
+    it 'ログインしていなければ404を返す' do
+      delete v1_user_registration_path
+      expect(response.status).to eq 404
+    end
+  end
 end

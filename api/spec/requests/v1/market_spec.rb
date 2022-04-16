@@ -156,16 +156,13 @@ RSpec.describe '/v1/market', type: :request do
         user
       end
 
-      first_user = nil
       Parallel.each(users, in_threads: 10) do |user|
         post v1_market_buy_path(item), headers: authorized_headers(user)
-        first_user ||= user
       end
 
       expect(MarketHistory.count).to eq 1
-      [first_user, *users].each(&:reload)
-      expect(first_user.point).to eq 500
-      expect(users.filter { |user| user.id != first_user.id }.map(&:point)).to eq [1000] * (users.size - 1)
+      users.each(&:reload)
+      expect(users.filter { |user| user.point != 1000 }.size).to eq 1
       expect(Item.find_by(id: item.id)).to be_nil
     end
   end

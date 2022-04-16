@@ -22,12 +22,12 @@ RSpec.describe 'V1::Auth::Sessions', type: :request do
 
     it 'ログインに成功したら200を返す' do
       post v1_user_session_path, params: { email: user_params[:email], password: user_params[:password] }, as: :json
-      expect(response).to have_http_status(200)
+      expect(response.status).to eq 200
     end
 
     it 'ログインに失敗したら401を返す' do
       post v1_user_session_path, params: { email: 'hoge', password: 'fuga' }, as: :json
-      expect(response).to have_http_status(401)
+      expect(response.status).to eq 401
     end
   end
 end
