@@ -17,7 +17,7 @@ RSpec.describe MarketHistory, type: :model do
     let!(:item) { create(:item, user: seller, point: 500) }
 
     it 'buyer, seller, itemを指定して売買履歴を作成できる' do
-      history = MarketHistory.append!(buyer, item)
+      history = MarketHistory.append!(buyer, seller, item)
 
       expect(history).to be_truthy
       expect(history.buyer_id).to eq buyer.id
@@ -28,19 +28,19 @@ RSpec.describe MarketHistory, type: :model do
     end
 
     context '失敗' do
-      after do
+      it '購入時のポイントが足りなければ作成できない' do
+        item.update!(point: 10_000)
         expect do
-          MarketHistory.append!(buyer, item)
+          MarketHistory.append!(buyer, seller, item)
         end.to raise_error(ActiveRecord::RecordInvalid)
         expect(MarketHistory.count).to eq 0
       end
 
-      it '購入時のポイントが足りなければ作成できない' do
-        item.update!(point: 10_000)
-      end
-
       it 'buyerとsellerが同一の場合は作成できない' do
-        item.update!(user: buyer)
+        expect do
+          MarketHistory.append!(buyer, buyer, item)
+        end.to raise_error(ActiveRecord::RecordInvalid)
+        expect(MarketHistory.count).to eq 0
       end
     end
   end

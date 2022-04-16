@@ -25,9 +25,11 @@ class User < ActiveRecord::Base
   def buy!(item)
     ApplicationRecord.transaction do
       item = Item.all.lock.find(item.id)
-      history = MarketHistory.append!(self, item)
+      buyer, seller = User.all.lock.find(id, item.user_id)
+      seller ||= buyer # id == item.user_id の場合sellerがnilになるのでbuyerを入れてappend!で例外を発生させる
+      history = MarketHistory.append!(self, seller, item)
       decrement!(:point, item.point)
-      item.user.increment!(:point, item.point)
+      seller.increment!(:point, item.point)
       item.destroy!
       return history
     end

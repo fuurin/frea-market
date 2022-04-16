@@ -28,8 +28,7 @@ class MarketHistory < ApplicationRecord
   validate :validate_buyer_is_not_seller
 
   class << self
-    def append!(buyer, item)
-      seller = item.user
+    def append!(buyer, seller, item)
       create!(
         buyer_id: buyer.id,
         buyer_name: buyer.name,

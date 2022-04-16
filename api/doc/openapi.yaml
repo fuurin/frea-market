@@ -65,15 +65,15 @@ paths:
               example:
                 status: success
                 data:
-                  id: 607
+                  id: 1520
                   provider: email
                   uid: example@example.com
                   allow_password_change: false
                   name: example
                   email: example@example.com
                   point: 10000
-                  created_at: '2022-04-16T16:01:58.416+09:00'
-                  updated_at: '2022-04-16T16:01:58.428+09:00'
+                  created_at: '2022-04-16T16:54:09.455+09:00'
+                  updated_at: '2022-04-16T16:54:09.468+09:00'
         '422':
           description: 必須パラメータが欠けていたら422を返す
           content:
@@ -189,15 +189,15 @@ paths:
               example:
                 status: success
                 data:
-                  id: 609
+                  id: 1522
                   email: piyo@example.com
                   provider: email
                   name: fuga
                   point: 10000
                   uid: piyo@example.com
                   allow_password_change: false
-                  created_at: '2022-04-16T16:01:59.052+09:00'
-                  updated_at: '2022-04-16T16:01:59.273+09:00'
+                  created_at: '2022-04-16T16:54:09.928+09:00'
+                  updated_at: '2022-04-16T16:54:10.103+09:00'
         '404':
           description: ログインしていなければ404を返す
           content:
@@ -329,7 +329,7 @@ paths:
                         type: boolean
               example:
                 data:
-                  id: 613
+                  id: 1526
                   email: example1@example.com
                   provider: email
                   name: user_2
@@ -421,15 +421,15 @@ paths:
                   updated_at:
                     type: string
               example:
-                id: 619
+                id: 1532
                 provider: email
                 uid: example5@example.com
                 allow_password_change: false
                 name: user_6
                 email: example5@example.com
                 point: 10000
-                created_at: '2022-04-16T16:02:00.447+09:00'
-                updated_at: '2022-04-16T16:02:00.498+09:00'
+                created_at: '2022-04-16T16:54:11.076+09:00'
+                updated_at: '2022-04-16T16:54:11.116+09:00'
         '401':
           description: ログインしていなければ401を返す
           content:
@@ -536,13 +536,13 @@ paths:
                       type: string
                   nullable: true
               example:
-              - id: 640
-                user_id: 621
+              - id: 1446
+                user_id: 1534
                 name: item_1
                 description: description_1
                 point: 1
-                created_at: '2022-04-16T16:02:00.902+09:00'
-                updated_at: '2022-04-16T16:02:00.902+09:00'
+                created_at: '2022-04-16T16:54:11.468+09:00'
+                updated_at: '2022-04-16T16:54:11.468+09:00'
         '401':
           description: ログインしていなければ401を返す
           content:
@@ -604,13 +604,13 @@ paths:
                   updated_at:
                     type: string
               example:
-                id: 665
-                user_id: 627
+                id: 1471
+                user_id: 1540
                 name: item_a
                 description: description_a
                 point: 100
-                created_at: '2022-04-16T16:02:01.769+09:00'
-                updated_at: '2022-04-16T16:02:01.769+09:00'
+                created_at: '2022-04-16T16:54:12.486+09:00'
+                updated_at: '2022-04-16T16:54:12.486+09:00'
         '400':
           description: リクエストパラメータの検証で失敗すると何もせず400を返す
           content:
@@ -658,7 +658,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 664
+        example: 1470
       responses:
         '200':
           description: idに対する商品のデータがあれば200で返す
@@ -682,13 +682,13 @@ paths:
                   updated_at:
                     type: string
               example:
-                id: 664
-                user_id: 625
+                id: 1470
+                user_id: 1538
                 name: item_25
                 description: description_25
                 point: 1
-                created_at: '2022-04-16T16:02:01.545+09:00'
-                updated_at: '2022-04-16T16:02:01.545+09:00'
+                created_at: '2022-04-16T16:54:12.159+09:00'
+                updated_at: '2022-04-16T16:54:12.159+09:00'
         '404':
           description: idに対する商品のデータが存在しなければ404を返す
           content:
@@ -713,7 +713,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 666
+        example: 1472
       requestBody:
         content:
           application/json:
@@ -757,13 +757,13 @@ paths:
                   updated_at:
                     type: string
               example:
-                id: 666
+                id: 1472
                 name: item_b
                 description: description_b
                 point: 200
-                user_id: 631
-                created_at: '2022-04-16T16:02:02.305+09:00'
-                updated_at: '2022-04-16T16:02:02.379+09:00'
+                user_id: 1544
+                created_at: '2022-04-16T16:54:12.957+09:00'
+                updated_at: '2022-04-16T16:54:13.056+09:00'
         '400':
           description: リクエストパラメータの検証で失敗すると何もせず400を返す
           content:
@@ -810,7 +810,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 670
+        example: 1476
       responses:
         '204':
           description: idに対する商品のデータがあれば削除して204を返す
@@ -883,13 +883,13 @@ paths:
                     updated_at:
                       type: string
               example:
-              - id: 674
-                user_id: 640
+              - id: 1480
+                user_id: 1553
                 name: item_30
                 description: description_30
                 point: 1
-                created_at: '2022-04-16T16:02:03.426+09:00'
-                updated_at: '2022-04-16T16:02:03.426+09:00'
+                created_at: '2022-04-16T16:54:13.939+09:00'
+                updated_at: '2022-04-16T16:54:13.939+09:00'
   "/v1/market/buy/{item_id}":
     post:
       summary: 出品中商品購入エンドポイント
@@ -901,7 +901,7 @@ paths:
         required: true
         schema:
           type: integer
-        example: 744
+        example: 1550
       responses:
         '201':
           description: 購入に成功すると201を返し、売買履歴を返す
@@ -941,21 +941,21 @@ paths:
                   updated_at:
                     type: string
               example:
-                id: 54
-                buyer_id: 654
+                id: 121
+                buyer_id: 1567
                 buyer_name: user_41
                 buyer_email: example40@example.com
                 buyer_point_to: 500
-                seller_id: 655
+                seller_id: 1568
                 seller_name: user_42
                 seller_email: example41@example.com
                 seller_point_to: 1500
-                item_id: 744
+                item_id: 1550
                 item_name: item_100
                 item_description: description_100
                 item_point: 500
-                created_at: '2022-04-16T16:02:04.944+09:00'
-                updated_at: '2022-04-16T16:02:04.944+09:00'
+                created_at: '2022-04-16T16:54:15.401+09:00'
+                updated_at: '2022-04-16T16:54:15.401+09:00'
         '404':
           description: 近いタイミングで商品が購入されたとき、最初に購入したユーザのみが購入に成功する
           content:
@@ -1045,51 +1045,51 @@ paths:
                     updated_at:
                       type: string
               example:
-              - id: 59
-                buyer_id: 698
+              - id: 126
+                buyer_id: 1611
                 buyer_name: user_85
                 buyer_email: example84@example.com
                 buyer_point_to: 0
-                seller_id: 699
+                seller_id: 1612
                 seller_name: user_86
                 seller_email: example85@example.com
                 seller_point_to: 1500
-                item_id: 753
+                item_id: 1559
                 item_name: item_109
                 item_description: description_109
                 item_point: 500
-                created_at: '2022-04-16T16:02:09.842+09:00'
-                updated_at: '2022-04-16T16:02:09.842+09:00'
-              - id: 58
-                buyer_id: 698
+                created_at: '2022-04-16T16:54:20.466+09:00'
+                updated_at: '2022-04-16T16:54:20.466+09:00'
+              - id: 125
+                buyer_id: 1611
                 buyer_name: user_85
                 buyer_email: example84@example.com
                 buyer_point_to: 500
-                seller_id: 699
+                seller_id: 1612
                 seller_name: user_86
                 seller_email: example85@example.com
                 seller_point_to: 1000
-                item_id: 752
+                item_id: 1558
                 item_name: item_108
                 item_description: description_108
                 item_point: 500
-                created_at: '2022-04-16T16:02:09.819+09:00'
-                updated_at: '2022-04-16T16:02:09.819+09:00'
-              - id: 57
-                buyer_id: 698
+                created_at: '2022-04-16T16:54:20.434+09:00'
+                updated_at: '2022-04-16T16:54:20.434+09:00'
+              - id: 124
+                buyer_id: 1611
                 buyer_name: user_85
                 buyer_email: example84@example.com
                 buyer_point_to: 1000
-                seller_id: 699
+                seller_id: 1612
                 seller_name: user_86
                 seller_email: example85@example.com
                 seller_point_to: 500
-                item_id: 751
+                item_id: 1557
                 item_name: item_107
                 item_description: description_107
                 item_point: 500
-                created_at: '2022-04-16T16:02:09.788+09:00'
-                updated_at: '2022-04-16T16:02:09.788+09:00'
+                created_at: '2022-04-16T16:54:20.412+09:00'
+                updated_at: '2022-04-16T16:54:20.412+09:00'
         '401':
           description: ログインしていない場合は401を返す
           content:
@@ -1150,51 +1150,51 @@ paths:
                     updated_at:
                       type: string
               example:
-              - id: 62
-                buyer_id: 702
+              - id: 129
+                buyer_id: 1615
                 buyer_name: user_89
                 buyer_email: example88@example.com
                 buyer_point_to: 0
-                seller_id: 703
+                seller_id: 1616
                 seller_name: user_90
                 seller_email: example89@example.com
                 seller_point_to: 1500
-                item_id: 759
+                item_id: 1565
                 item_name: item_115
                 item_description: description_115
                 item_point: 500
-                created_at: '2022-04-16T16:02:10.307+09:00'
-                updated_at: '2022-04-16T16:02:10.307+09:00'
-              - id: 61
-                buyer_id: 702
+                created_at: '2022-04-16T16:54:20.860+09:00'
+                updated_at: '2022-04-16T16:54:20.860+09:00'
+              - id: 128
+                buyer_id: 1615
                 buyer_name: user_89
                 buyer_email: example88@example.com
                 buyer_point_to: 500
-                seller_id: 703
+                seller_id: 1616
                 seller_name: user_90
                 seller_email: example89@example.com
                 seller_point_to: 1000
-                item_id: 758
+                item_id: 1564
                 item_name: item_114
                 item_description: description_114
                 item_point: 500
-                created_at: '2022-04-16T16:02:10.288+09:00'
-                updated_at: '2022-04-16T16:02:10.288+09:00'
-              - id: 60
-                buyer_id: 702
+                created_at: '2022-04-16T16:54:20.832+09:00'
+                updated_at: '2022-04-16T16:54:20.832+09:00'
+              - id: 127
+                buyer_id: 1615
                 buyer_name: user_89
                 buyer_email: example88@example.com
                 buyer_point_to: 1000
-                seller_id: 703
+                seller_id: 1616
                 seller_name: user_90
                 seller_email: example89@example.com
                 seller_point_to: 500
-                item_id: 757
+                item_id: 1563
                 item_name: item_113
                 item_description: description_113
                 item_point: 500
-                created_at: '2022-04-16T16:02:10.269+09:00'
-                updated_at: '2022-04-16T16:02:10.269+09:00'
+                created_at: '2022-04-16T16:54:20.813+09:00'
+                updated_at: '2022-04-16T16:54:20.813+09:00'
         '401':
           description: ログインしていない場合は401を返す
           content:
